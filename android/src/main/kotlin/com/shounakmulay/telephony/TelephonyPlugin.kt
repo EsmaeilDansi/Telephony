@@ -13,6 +13,9 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.*
 import com.shounakmulay.telephony.sms.FlutterHandler
 import android.util.Log
+import android.content.Intent
+import android.net.ConnectivityManager
+import android.content.IntentFilter
 class TelephonyPlugin : FlutterPlugin, ActivityAware {
 
   private lateinit var smsChannel: MethodChannel
@@ -34,7 +37,9 @@ class TelephonyPlugin : FlutterPlugin, ActivityAware {
 
     setupPlugin(flutterPluginBinding.applicationContext, binaryMessenger)
     flutterHandler = FlutterHandler(flutterPluginBinding)
-    Log.e("tell", "register done")
+    flutterPluginBinding
+            .applicationContext
+            .registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
   }
 
