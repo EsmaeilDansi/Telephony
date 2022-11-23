@@ -44,7 +44,8 @@ import com.shounakmulay.telephony.utils.SmsAction
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
-
+import android.util.Log
+import android.telephony.TelephonyManager
 
 class SmsMethodCallHandler(
     private val context: Context,
@@ -190,6 +191,7 @@ class SmsMethodCallHandler(
       val intentFilter = IntentFilter().apply {
         addAction(Constants.ACTION_SMS_SENT)
         addAction(Constants.ACTION_SMS_DELIVERED)
+        addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
       }
       context.applicationContext.registerReceiver(this, intentFilter)
     }

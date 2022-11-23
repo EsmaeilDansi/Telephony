@@ -1,8 +1,10 @@
 package com.shounakmulay.telephony.sms
 
+import android.content.BroadcastReceiver
+import android.telephony.TelephonyManager
+import com.shounakmulay.telephony.utils.PhoneStateStatus
 import android.app.ActivityManager
 import android.app.KeyguardManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Process
@@ -35,52 +37,57 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
 import android.util.Log
-import android.telephony.TelephonyManager
-class IncomingSmsReceiver : BroadcastReceiver() {
 
+open class PhoneStateReceiver : BroadcastReceiver() {
     companion object {
         var foregroundSmsChannel: MethodChannel? = null
     }
 
-    override fun onReceive(context: Context, intent: Intent?) {
-        ContextHolder.applicationContext = context.applicationContext
-        val smsList = Telephony.Sms.Intents.getMessagesFromIntent(intent)
-        val messagesGroupedByOriginatingAddress = smsList.groupBy { it.originatingAddress }
-        messagesGroupedByOriginatingAddress.forEach { group ->
-            processIncomingSms(context, group.value)
-        }
-    }
+    var status: PhoneStateStatus = PhoneStateStatus.NOTHING;
+    override fun onReceive(context: Context?, intent: Intent?) {
+        ContextHolder.applicationContext = context!!.applicationContext
+        Log.e("phonestate", "incoming call.")
+        try {
+            status = when (intent?.getStringExtra(TelephonyManager.EXTRA_STATE)) {
+                TelephonyManager.EXTRA_STATE_RINGING -> PhoneStateStatus.CALL_INCOMING
+                TelephonyManager.EXTRA_STATE_OFFHOOK -> PhoneStateStatus.CALL_STARTED
+                TelephonyManager.EXTRA_STATE_IDLE -> PhoneStateStatus.CALL_ENDED
+                else -> PhoneStateStatus.NOTHING
+            }
+            Log.e("phonestate", status.toString())
+            if (context != null) {
+                val smsMap = HashMap<String, Any?>()
+                this.apply {
+                    smsMap[MESSAGE_BODY] = "call"
+                    smsMap[TIMESTAMP] = "time"
+                    smsMap[ORIGINATING_ADDRESS] = "tel"
+                    smsMap[STATUS] = status.toString()
+                    smsMap[SERVICE_CENTER_ADDRESS] = "serviceCenterAddress"
+                }
+                Log.e("phonestate", smsMap.toString())
+                if (IncomingCallHandler.isApplicationForeground(context)) {
+                    Log.e("phonestate", "forground")
+                    val args = HashMap<String, Any>()
+                    args[MESSAGE] = smsMap
+                    foregroundSmsChannel?.invokeMethod(ON_MESSAGE, args)
+                } else {
+                    Log.e("phonestate", "backround")
+                    val preferences =
+                            context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                    val disableBackground =
+                            preferences.getBoolean(SHARED_PREFS_DISABLE_BACKGROUND_EXE, false)
+                    if (!disableBackground) {
+                        Log.e("phonestate", "processInBackground")
+                        processInBackground(context, smsMap)
+                    }
+                }
 
-    /**
-     * Calls [ON_MESSAGE] method on the Foreground Channel if the application is in foreground.
-     *
-     * If the application is not in the foreground and the background isolate is not running, it initializes the
-     * background isolate. The SMS is added to a background queue that will be processed on the isolate is initialized.
-     *
-     * If the application is not in the foreground but the the background isolate is running, it calls the
-     * [IncomingSmsHandler.executeDartCallbackInBackgroundIsolate] with the SMS.
-     *
-     */
-    private fun processIncomingSms(context: Context, smsList: List<SmsMessage>) {
-        val messageMap = smsList.first().toMap()
-        smsList.forEachIndexed { index, smsMessage ->
-            if (index > 0) {
-                messageMap[MESSAGE_BODY] = (messageMap[MESSAGE_BODY] as String)
-                    .plus(smsMessage.messageBody.trim())
+
             }
-        }
-        if (IncomingSmsHandler.isApplicationForeground(context)) {
-            val args = HashMap<String, Any>()
-            args[MESSAGE] = messageMap
-            foregroundSmsChannel?.invokeMethod(ON_MESSAGE, args)
-        } else {
-            val preferences =
-                context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-            val disableBackground =
-                preferences.getBoolean(SHARED_PREFS_DISABLE_BACKGROUND_EXE, false)
-            if (!disableBackground) {
-                processInBackground(context, messageMap)
-            }
+
+        } catch (e: Exception) {
+            Log.e("phonestateExp", e.toString())
+            e.printStackTrace()
         }
     }
 
@@ -89,9 +96,9 @@ class IncomingSmsReceiver : BroadcastReceiver() {
             if (!isIsolateRunning.get()) {
                 initialize(context)
                 val preferences =
-                    context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                        context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 val backgroundCallbackHandle =
-                    preferences.getLong(SHARED_PREFS_BACKGROUND_SETUP_HANDLE, 0)
+                        preferences.getLong(SHARED_PREFS_BACKGROUND_SETUP_HANDLE, 0)
                 startBackgroundIsolate(context, backgroundCallbackHandle)
                 backgroundMessageQueue.add(sms)
             } else {
@@ -99,36 +106,13 @@ class IncomingSmsReceiver : BroadcastReceiver() {
             }
         }
     }
+
 }
 
-/**
- * Convert the [SmsMessage] to a [HashMap]
- */
-fun SmsMessage.toMap(): HashMap<String, Any?> {
-    val smsMap = HashMap<String, Any?>()
-    this.apply {
-        smsMap[MESSAGE_BODY] = messageBody
-        smsMap[TIMESTAMP] = timestampMillis.toString()
-        smsMap[ORIGINATING_ADDRESS] = originatingAddress
-        smsMap[STATUS] = status.toString()
-        smsMap[SERVICE_CENTER_ADDRESS] = serviceCenterAddress
-    }
-    return smsMap
-}
-
-/**
- * Handle all the background processing on received SMS
- *
- * Call [setBackgroundSetupHandle] and [setBackgroundMessageHandle] before performing any other operations.
- *
- *
- * Will throw [RuntimeException] if [backgroundChannel] was not initialized by calling [startBackgroundIsolate]
- * before calling [executeDartCallbackInBackgroundIsolate]
- */
-object IncomingSmsHandler : MethodChannel.MethodCallHandler {
+object IncomingCallHandler : MethodChannel.MethodCallHandler {
 
     internal val backgroundMessageQueue =
-        Collections.synchronizedList(mutableListOf<HashMap<String, Any?>>())
+            Collections.synchronizedList(mutableListOf<HashMap<String, Any?>>())
     internal var isIsolateRunning = AtomicBoolean(false)
 
     private lateinit var backgroundChannel: MethodChannel
@@ -148,13 +132,13 @@ object IncomingSmsHandler : MethodChannel.MethodCallHandler {
         val flutterCallback = FlutterCallbackInformation.lookupCallbackInformation(callbackHandle)
 
         val dartEntryPoint =
-            DartExecutor.DartCallback(context.assets, appBundlePath, flutterCallback)
+                DartExecutor.DartCallback(context.assets, appBundlePath, flutterCallback)
 
         backgroundFlutterEngine = FlutterEngine(context, flutterLoader, FlutterJNI())
         backgroundFlutterEngine.dartExecutor.executeDartCallback(dartEntryPoint)
 
         backgroundChannel =
-            MethodChannel(backgroundFlutterEngine.dartExecutor, Constants.CHANNEL_SMS_BACKGROUND)
+                MethodChannel(backgroundFlutterEngine.dartExecutor, Constants.CHANNEL_SMS_BACKGROUND)
         backgroundChannel.setMethodCallHandler(this)
     }
 
@@ -182,12 +166,12 @@ object IncomingSmsHandler : MethodChannel.MethodCallHandler {
      * Invoke the method on background channel to handle the message
      */
     internal fun executeDartCallbackInBackgroundIsolate(
-        context: Context,
-        message: HashMap<String, Any?>
+            context: Context,
+            message: HashMap<String, Any?>
     ) {
         if (!this::backgroundChannel.isInitialized) {
             throw RuntimeException(
-                "setBackgroundChannel was not called before messages came in, exiting."
+                    "setBackgroundChannel was not called before messages came in, exiting."
             )
         }
 
@@ -219,7 +203,7 @@ object IncomingSmsHandler : MethodChannel.MethodCallHandler {
         // Store background message handle in shared preferences so it can be retrieved
         // by other application instances.
         val preferences =
-            context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         preferences.edit().putLong(SHARED_PREFS_BACKGROUND_MESSAGE_HANDLE, handle).apply()
 
     }
@@ -228,15 +212,15 @@ object IncomingSmsHandler : MethodChannel.MethodCallHandler {
         // Store background setup handle in shared preferences so it can be retrieved
         // by other application instances.
         val preferences =
-            context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         preferences.edit().putLong(SHARED_PREFS_BACKGROUND_SETUP_HANDLE, setupBackgroundHandle)
-            .apply()
+                .apply()
     }
 
     private fun getBackgroundMessageHandle(context: Context): Long {
         return context
-            .getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-            .getLong(SHARED_PREFS_BACKGROUND_MESSAGE_HANDLE, 0)
+                .getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                .getLong(SHARED_PREFS_BACKGROUND_MESSAGE_HANDLE, 0)
     }
 
     fun isApplicationForeground(context: Context): Boolean {
@@ -261,8 +245,8 @@ object IncomingSmsHandler : MethodChannel.MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         if (SmsAction.fromMethod(call.method) == SmsAction.BACKGROUND_SERVICE_INITIALIZED) {
             onChannelInitialized(
-                ContextHolder.applicationContext
-                    ?: throw RuntimeException("Context not initialised!")
+                    ContextHolder.applicationContext
+                            ?: throw RuntimeException("Context not initialised!")
             )
         }
     }

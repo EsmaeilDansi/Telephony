@@ -11,8 +11,8 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.*
-
-
+import com.shounakmulay.telephony.sms.FlutterHandler
+import android.util.Log
 class TelephonyPlugin : FlutterPlugin, ActivityAware {
 
   private lateinit var smsChannel: MethodChannel
@@ -24,6 +24,8 @@ class TelephonyPlugin : FlutterPlugin, ActivityAware {
   private lateinit var binaryMessenger: BinaryMessenger
 
   private lateinit var permissionsController: PermissionsController
+  
+  private lateinit var flutterHandler: FlutterHandler
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     if (!this::binaryMessenger.isInitialized) {
@@ -31,6 +33,9 @@ class TelephonyPlugin : FlutterPlugin, ActivityAware {
     }
 
     setupPlugin(flutterPluginBinding.applicationContext, binaryMessenger)
+    flutterHandler = FlutterHandler(flutterPluginBinding)
+    Log.e("tell", "register done")
+
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -68,6 +73,7 @@ class TelephonyPlugin : FlutterPlugin, ActivityAware {
   private fun tearDownPlugin() {
     IncomingSmsReceiver.foregroundSmsChannel = null
     smsChannel.setMethodCallHandler(null)
+    flutterHandler.dispose()
   }
 
 }
