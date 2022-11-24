@@ -12,6 +12,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.*
 import com.shounakmulay.telephony.sms.FlutterHandler
+import com.shounakmulay.telephony.sms.ConnectivityReceiver
 import android.util.Log
 import android.content.Intent
 import android.net.ConnectivityManager
