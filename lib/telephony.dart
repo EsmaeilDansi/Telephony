@@ -59,7 +59,7 @@ class Telephony {
   late MessageHandler _onBackgroundMessages;
   late SmsSendStatusListener _statusListener;
 
-  static Stream<String> get connectionStream {
+  Stream<String> get connectionStream {
     print("connect.........");
     return _eventChannel
         .receiveBroadcastStream()
