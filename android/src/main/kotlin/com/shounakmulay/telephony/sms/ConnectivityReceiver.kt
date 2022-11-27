@@ -43,7 +43,6 @@ open class ConnectivityReceiver : BroadcastReceiver() {
 
     companion object {
         var foregroundSmsChannel: MethodChannel? = null
-        var connectivityReceiverListener: ConnectivityReceiverListener? = null
     }
     var state:String = "connect";
 
