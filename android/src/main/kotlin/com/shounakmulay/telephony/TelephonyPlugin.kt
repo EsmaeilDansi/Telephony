@@ -36,13 +36,14 @@ class TelephonyPlugin : FlutterPlugin, ActivityAware {
     private lateinit var connectionHandler: ConnectionStateHandler
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        connectionHandler = ConnectionStateHandler(flutterPluginBinding)
         if (!this::binaryMessenger.isInitialized) {
             binaryMessenger = flutterPluginBinding.binaryMessenger
         }
 
         setupPlugin(flutterPluginBinding.applicationContext, binaryMessenger)
         phoneStateHandler = PhoneStateHandler(flutterPluginBinding)
-        connectionHandler = ConnectionStateHandler(flutterPluginBinding)
+
 //        flutterPluginBinding
 //                .applicationContext
 //                .registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
