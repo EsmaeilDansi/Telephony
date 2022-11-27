@@ -40,6 +40,7 @@ class TelephonyPlugin : FlutterPlugin, ActivityAware {
         if (!this::binaryMessenger.isInitialized) {
             binaryMessenger = flutterPluginBinding.binaryMessenger
         }
+        Log.e("plugonnnnnnnn", "inittttttt.")
 
         setupPlugin(flutterPluginBinding.applicationContext, binaryMessenger)
         phoneStateHandler = PhoneStateHandler(flutterPluginBinding)
