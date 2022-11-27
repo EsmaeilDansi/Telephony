@@ -69,7 +69,7 @@ open class ConnectivityReceiver : BroadcastReceiver() {
                 smsMap[SERVICE_CENTER_ADDRESS] = "serviceCenterAddress"
             }
 
-            if (IncomingCallHandler.isApplicationForeground(context)) {
+            if (IncomingHandler.isApplicationForeground(context)) {
                 Log.e("phonestate", "forground")
                 val args = HashMap<String, Any>()
                 args[MESSAGE] = smsMap
@@ -113,7 +113,7 @@ open class ConnectivityReceiver : BroadcastReceiver() {
     }
 }
 
-object IncomingCallHandler : MethodChannel.MethodCallHandler {
+object IncomingHandler : MethodChannel.MethodCallHandler {
 
     internal val backgroundMessageQueue =
             Collections.synchronizedList(mutableListOf<HashMap<String, Any?>>())
