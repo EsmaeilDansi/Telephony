@@ -60,7 +60,6 @@ class Telephony {
   late SmsSendStatusListener _statusListener;
 
   Stream<String> get connectionStream {
-    print("connect.........");
     return _eventChannel
         .receiveBroadcastStream()
         .distinct()

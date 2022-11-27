@@ -69,13 +69,13 @@ open class ConnectivityReceiver : BroadcastReceiver() {
                 smsMap[SERVICE_CENTER_ADDRESS] = "serviceCenterAddress"
             }
 
-            if (ConnectionHandler.isApplicationForeground(context)) {
+            if (IncomingCallHandler.isApplicationForeground(context)) {
                 Log.e("phonestate", "forground")
                 val args = HashMap<String, Any>()
                 args[MESSAGE] = smsMap
                 foregroundSmsChannel?.invokeMethod(ON_MESSAGE, args)
             } else {
-                Log.e("phonestate", "backround")
+                Log.e("connection", "backround")
                 val preferences =
                         context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 val disableBackground =
@@ -113,7 +113,7 @@ open class ConnectivityReceiver : BroadcastReceiver() {
     }
 }
 
-object ConnectionHandler : MethodChannel.MethodCallHandler {
+object IncomingCallHandler : MethodChannel.MethodCallHandler {
 
     internal val backgroundMessageQueue =
             Collections.synchronizedList(mutableListOf<HashMap<String, Any?>>())
