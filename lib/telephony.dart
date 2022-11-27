@@ -134,8 +134,8 @@ class Telephony {
         <String, dynamic>{
           'setupHandle': backgroundSetupHandle.toRawHandle(),
           'backgroundHandle': backgroundMessageHandle.toRawHandle(),
-          'listen_on_sms': listenOnSms,
-          'listen_on_call': listenOnCall,
+          'listen_on_sms': listenOnSms.toString(),
+          'listen_on_call': listenOnCall.toString(),
         },
       );
     } else {
