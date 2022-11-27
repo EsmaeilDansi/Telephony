@@ -15,6 +15,7 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import  com.shounakmulay.telephony.sms.ConnectivityReceiver
 import  com.shounakmulay.telephony.utils.Constants
+import android.net.ConnectivityManager
 import android.util.Log
 
 
@@ -26,11 +27,11 @@ class ConnectionStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBindin
             private lateinit var receiver: ConnectivityReceiver
 
             override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-                receiver = object : PhoneStateReceiver() {
+                receiver = object : ConnectivityReceiver() {
                     override fun onReceive(context: Context?, intent: Intent?) {
                         super.onReceive(context, intent)
                         Log.e("conneection state", "networkkkkkkkk")
-                        events?.success(receiver.status.toString())
+                        events?.success("conected")
                     }
                 }
 
