@@ -23,11 +23,6 @@ class ConnectionStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBindin
     private var networkStateEventChannel: EventChannel = EventChannel(binding.binaryMessenger, "CONNECTION_STATE")
 
     init {
-//        Log.e("conneection", "registeeeeeeeeeeeeeeeeer")
-//        binding.applicationContext.registerReceiver(
-//                receiver,
-//                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-//        )
         networkStateEventChannel.setStreamHandler(object : EventChannel.StreamHandler {
             private lateinit var receiver: ConnectivityReceiver
 
@@ -40,8 +35,6 @@ class ConnectionStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBindin
                         events?.success(receiver.state.toString())
                     }
                 }
-
-                Log.e("connection sateeeeeeeee", "change  connection")
                 binding.applicationContext.registerReceiver(
                         receiver,
                         IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)

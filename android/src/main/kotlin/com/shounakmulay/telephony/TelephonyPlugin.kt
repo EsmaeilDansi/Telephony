@@ -35,12 +35,11 @@ class TelephonyPlugin : FlutterPlugin, ActivityAware {
     private lateinit var connectionHandler: ConnectionStateHandler
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        connectionHandler = ConnectionStateHandler(flutterPluginBinding)
+
         if (!this::binaryMessenger.isInitialized) {
             binaryMessenger = flutterPluginBinding.binaryMessenger
         }
-        Log.e("plugonnnnnnnn", "inittttttt.")
-
+        connectionHandler = ConnectionStateHandler(flutterPluginBinding)
         setupPlugin(flutterPluginBinding.applicationContext, binaryMessenger)
         phoneStateHandler = PhoneStateHandler(flutterPluginBinding)
 
