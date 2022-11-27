@@ -39,12 +39,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
 import android.util.Log
 
-open  class ConnectivityReceiver : BroadcastReceiver() {
+open class ConnectivityReceiver : BroadcastReceiver() {
 
     companion object {
         var foregroundSmsChannel: MethodChannel? = null
         var connectivityReceiverListener: ConnectivityReceiverListener? = null
     }
+
     override fun onReceive(context: Context?, intent: Intent?) {
         ContextHolder.applicationContext = context!!.applicationContext
         Log.e("connetion", "connection change")
@@ -92,7 +93,6 @@ open  class ConnectivityReceiver : BroadcastReceiver() {
     interface ConnectivityReceiverListener {
         fun onNetworkConnectionChanged(isConnected: Boolean)
     }
-
 
 
     public fun processInBackground(context: Context, sms: HashMap<String, Any?>) {

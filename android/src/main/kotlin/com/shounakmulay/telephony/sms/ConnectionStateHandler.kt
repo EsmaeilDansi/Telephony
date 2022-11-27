@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.telephony.TelephonyManager
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -29,6 +28,7 @@ class ConnectionStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBindin
             private lateinit var receiver: ConnectivityReceiver
 
             override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                Log.e("conneection state", "networkkkkkkkk")
                 receiver = object : ConnectivityReceiver() {
                     override fun onReceive(context: Context?, intent: Intent?) {
                         super.onReceive(context, intent)

@@ -20,6 +20,7 @@ class PhoneStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     private var phoneStateEventChannel: EventChannel = EventChannel(binding.binaryMessenger, "PHONE_STATE_STREAM")
 
     init {
+        Log.e("phonestate", "init phone state ........")
         phoneStateEventChannel.setStreamHandler(object : EventChannel.StreamHandler {
             private lateinit var receiver: PhoneStateReceiver
 
