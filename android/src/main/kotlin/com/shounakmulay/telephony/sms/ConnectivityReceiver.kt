@@ -42,6 +42,7 @@ import android.util.Log
 open class ConnectivityReceiver : BroadcastReceiver() {
 
     companion object {
+        Log.e("connetion", "inttttttttttttttttt")
         var foregroundSmsChannel: MethodChannel? = null
         var connectivityReceiverListener: ConnectivityReceiverListener? = null
     }
