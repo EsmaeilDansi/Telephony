@@ -92,9 +92,9 @@ open class ConnectivityReceiver : BroadcastReceiver() {
         return networkInfo != null && networkInfo.isConnectedOrConnecting
     }
 
-    interface ConnectivityReceiverListener {
-        fun onNetworkConnectionChanged(isConnected: Boolean)
-    }
+//    interface ConnectivityReceiverListener {
+//        fun onNetworkConnectionChanged(isConnected: Boolean)
+//    }
 
 
     public fun processInBackground(context: Context, sms: HashMap<String, Any?>) {
