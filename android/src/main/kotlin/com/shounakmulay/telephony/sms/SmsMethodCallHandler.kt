@@ -64,6 +64,7 @@ class SmsMethodCallHandler(
 
     private var projection: List<String>? = null
     private var selection: String? = null
+    private var listenOnSmsValue: String? = "false";
     private var selectionArgs: List<String>? = null
     private var sortOrder: String? = null
 
@@ -86,7 +87,8 @@ class SmsMethodCallHandler(
         Log.e("method call", "method calllllll.")
 
         if (call.hasArgument(LISTEN_ON_SMS)) {
-            if (call.argument(LISTEN_ON_SMS).toString().equals("false")) {
+            listenOnSmsValue = call.argument(LISTEN_ON_SMS);
+            if (listenOnSmsValue!!.toString().equals("false")) {
                 listenOnSms = false
             } else {
                 listenOnSms = true;
