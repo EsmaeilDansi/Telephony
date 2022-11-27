@@ -45,6 +45,7 @@ open class ConnectivityReceiver : BroadcastReceiver() {
         var foregroundSmsChannel: MethodChannel? = null
         var connectivityReceiverListener: ConnectivityReceiverListener? = null
     }
+    var state:String = "connect";
 
     override fun onReceive(context: Context?, intent: Intent?) {
         ContextHolder.applicationContext = context!!.applicationContext
@@ -59,6 +60,7 @@ open class ConnectivityReceiver : BroadcastReceiver() {
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
         if (networkInfo != null) {
+            state = networkInfo.toString();
             val smsMap = HashMap<String, Any?>()
             this.apply {
                 smsMap[MESSAGE_BODY] = "connection"
