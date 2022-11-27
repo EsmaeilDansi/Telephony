@@ -53,9 +53,19 @@ class Telephony {
   final MethodChannel _foregroundChannel;
   final Platform _platform;
 
+  static const EventChannel _eventChannel = EventChannel("CONNECTION_STATE");
+
   late MessageHandler _onNewMessage;
   late MessageHandler _onBackgroundMessages;
   late SmsSendStatusListener _statusListener;
+
+  static Stream<String> get connectionStream {
+    print("connect.........");
+    return _eventChannel
+        .receiveBroadcastStream()
+        .distinct()
+        .map((dynamic event) => event.toString());
+  }
 
   ///
   /// Gets a singleton instance of the [Telephony] class.

@@ -20,14 +20,14 @@ import android.util.Log
 
 class ConnectionStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
 
-    private var networkStateEventChannel: EventChannel = EventChannel(binding.binaryMessenger, "NETWORK_STATE_STREAM")
+    private var networkStateEventChannel: EventChannel = EventChannel(binding.binaryMessenger, "CONNECTION_STATE")
 
     init {
-        Log.e("conneection", "registeeeeeeeeeeeeeeeeer")
-        binding.applicationContext.registerReceiver(
-                receiver,
-                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+//        Log.e("conneection", "registeeeeeeeeeeeeeeeeer")
+//        binding.applicationContext.registerReceiver(
+//                receiver,
+//                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+//        )
         networkStateEventChannel.setStreamHandler(object : EventChannel.StreamHandler {
             private lateinit var receiver: ConnectivityReceiver
 
