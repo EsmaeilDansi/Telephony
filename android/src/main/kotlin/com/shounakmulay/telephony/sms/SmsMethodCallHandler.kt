@@ -39,6 +39,8 @@ import com.shounakmulay.telephony.utils.Constants.SMS_SEND_REQUEST_CODE
 import com.shounakmulay.telephony.utils.Constants.SMS_SENT
 import com.shounakmulay.telephony.utils.Constants.SORT_ORDER
 import com.shounakmulay.telephony.utils.Constants.WRONG_METHOD_TYPE
+import com.shounakmulay.telephony.utils.Constants.LISTEN_ON_CALL
+import com.shounakmulay.telephony.utils.Constants.LISTEN_ON_SMS
 import com.shounakmulay.telephony.utils.ContentUri
 import com.shounakmulay.telephony.utils.SmsAction
 import io.flutter.plugin.common.MethodCall
@@ -46,7 +48,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import android.util.Log
 import android.telephony.TelephonyManager
-import android.util.Log
 
 class SmsMethodCallHandler(
         private val context: Context,
@@ -82,7 +83,7 @@ class SmsMethodCallHandler(
 
         if (call.hasArgument(LISTEN_ON_SMS)) {
             Log.e("method call", "listen on sms ")
-            Log.e("listen on sms", call.argument(LISTEN_ON_SMS))
+            Log.e("listen on sms", call.argument(LISTEN_ON_SMS)!!)
         }
 
         this.result = result
