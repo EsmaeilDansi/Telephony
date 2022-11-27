@@ -21,6 +21,7 @@ import android.util.Log
 class ConnectionStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
 
     init {
+        ConnectivityReceiver.connectivityReceiverListener = this
         ConnectivityReceiver.ConnectivityReceiverListener {
             override fun onNetworkConnectionChanged(isConnected: Boolean) {
                 Log.e("connection sateeeeeeeee", "change  connection")

@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
 import android.util.Log
 
- class ConnectivityReceiver : BroadcastReceiver() {
+open  class ConnectivityReceiver : BroadcastReceiver() {
 
     companion object {
         var foregroundSmsChannel: MethodChannel? = null
