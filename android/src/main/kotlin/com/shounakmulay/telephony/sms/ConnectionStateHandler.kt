@@ -42,10 +42,10 @@ class ConnectionStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBindin
                 }
 
                 Log.e("connection sateeeeeeeee", "change  connection")
-//                binding.applicationContext.registerReceiver(
-//                        receiver,
-//                        IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-//                )
+                binding.applicationContext.registerReceiver(
+                        receiver,
+                        IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+                )
             }
 
             override fun onCancel(arguments: Any?) {
