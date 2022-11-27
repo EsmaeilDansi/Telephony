@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     final bool? result = await telephony.requestPhoneAndSmsPermissions;
 
     if (result != null && result) {
-      telephony.listenIncomingSms(
+      telephony.listenOnAndroidReceiver(
           onNewMessage: onMessage, onBackgroundMessage: onBackgroundMessage);
     }
 

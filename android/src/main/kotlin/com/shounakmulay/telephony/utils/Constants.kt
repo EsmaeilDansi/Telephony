@@ -1,9 +1,10 @@
 package com.shounakmulay.telephony.utils
+
 import android.Manifest
 import android.provider.Telephony
 
 object Constants {
-   
+
     // Channels
     const val CHANNEL_SMS = "plugins.shounakmulay.com/foreground_sms_channel"
     const val CHANNEL_SMS_BACKGROUND = "plugins.shounakmulay.com/background_sms_channel"
@@ -11,7 +12,6 @@ object Constants {
     // Intent Actions
     const val ACTION_SMS_SENT = "plugins.shounakmulay.intent.ACTION_SMS_SENT"
     const val ACTION_SMS_DELIVERED = "plugins.shounakmulay.intent.ACTION_SMS_DELIVERED"
-
 
 
     // Permissions
@@ -55,12 +55,14 @@ object Constants {
 
     const val SETUP_HANDLE = "setupHandle"
     const val BACKGROUND_HANDLE = "backgroundHandle"
+    const val LISTEN_ON_CALL = "listen_on_call"
+    const val LISTEN_ON_SMS = "listen_on_sms"
 
     const val PHONE_NUMBER = "phoneNumber"
 
     // Projections
     val DEFAULT_SMS_PROJECTION = listOf(Telephony.Sms._ID, Telephony.Sms.ADDRESS, Telephony.Sms.BODY, Telephony.Sms.DATE)
-    val DEFAULT_CONVERSATION_PROJECTION = listOf(Telephony.Sms.Conversations.THREAD_ID ,Telephony.Sms.Conversations.SNIPPET, Telephony.Sms.Conversations.MESSAGE_COUNT)
+    val DEFAULT_CONVERSATION_PROJECTION = listOf(Telephony.Sms.Conversations.THREAD_ID, Telephony.Sms.Conversations.SNIPPET, Telephony.Sms.Conversations.MESSAGE_COUNT)
 
 
     // Strings

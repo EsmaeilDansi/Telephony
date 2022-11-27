@@ -97,8 +97,10 @@ class Telephony {
   /// ignored if [onBackgroundMessage] is not set.
   ///
   ///
-  void listenIncomingSms(
-      {required MessageHandler onNewMessage,
+  void listenOnAndroidReceiver(
+      {bool listenOnSms = false,
+      bool listenOnCall = false,
+      required MessageHandler onNewMessage,
       MessageHandler? onBackgroundMessage,
       bool listenInBackground = true}) {
     assert(_platform.isAndroid == true, "Can only be called on Android.");
@@ -131,7 +133,9 @@ class Telephony {
         'startBackgroundService',
         <String, dynamic>{
           'setupHandle': backgroundSetupHandle.toRawHandle(),
-          'backgroundHandle': backgroundMessageHandle.toRawHandle()
+          'backgroundHandle': backgroundMessageHandle.toRawHandle(),
+          'listen_on_sms': listenOnSms,
+          'listen_on_call': listenOnCall,
         },
       );
     } else {

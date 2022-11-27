@@ -52,7 +52,7 @@ main() {
     });
 
     test("incoming sms", () async {
-      telephony.listenIncomingSms(
+      telephony.listenOnAndroidReceiver(
           onNewMessage: (message) {
             expect(message.body, mockIncomingMessage["message_body"]);
             expect(message.address, mockIncomingMessage["originating_address"]);
