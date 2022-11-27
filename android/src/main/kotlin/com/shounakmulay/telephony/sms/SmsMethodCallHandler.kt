@@ -46,7 +46,6 @@ import com.shounakmulay.telephony.utils.SmsAction
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
-import android.util.Log
 import android.telephony.TelephonyManager
 
 class SmsMethodCallHandler(
@@ -84,7 +83,6 @@ class SmsMethodCallHandler(
     private var listenOnCall: Boolean = false
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        Log.e("method call", "method calllllll.")
 
         if (call.hasArgument(LISTEN_ON_SMS)) {
             listenOnSmsValue = call.argument(LISTEN_ON_SMS);
@@ -93,7 +91,6 @@ class SmsMethodCallHandler(
             } else {
                 listenOnSms = true;
             }
-            Log.e("listen on sms", listenOnSms.toString())
         }
 
         this.result = result
@@ -333,7 +330,6 @@ class SmsMethodCallHandler(
                     val permissions = permissionsController.getSmsPermissions()
                     return checkOrRequestPermission(permissions, requestCode)
                 } else {
-                    Log.e("get permission", "listen on  sms cancellllllllll")
                     return false
                 }
 

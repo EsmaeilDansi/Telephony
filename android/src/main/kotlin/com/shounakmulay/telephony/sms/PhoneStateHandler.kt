@@ -16,7 +16,7 @@ import io.flutter.plugin.common.MethodChannel
 import  com.shounakmulay.telephony.sms.PhoneStateReceiver
 import  com.shounakmulay.telephony.utils.Constants
 import android.util.Log
-class FlutterHandler(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+class PhoneStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     private var phoneStateEventChannel: EventChannel = EventChannel(binding.binaryMessenger, "PHONE_STATE_STREAM")
 
     init {

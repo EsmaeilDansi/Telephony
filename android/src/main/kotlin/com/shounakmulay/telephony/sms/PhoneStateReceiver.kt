@@ -46,7 +46,6 @@ open class PhoneStateReceiver : BroadcastReceiver() {
     var status: PhoneStateStatus = PhoneStateStatus.NOTHING;
     override fun onReceive(context: Context?, intent: Intent?) {
         ContextHolder.applicationContext = context!!.applicationContext
-        Log.e("phonestate", "incoming call.")
         try {
             status = when (intent?.getStringExtra(TelephonyManager.EXTRA_STATE)) {
                 TelephonyManager.EXTRA_STATE_RINGING -> PhoneStateStatus.CALL_INCOMING
@@ -54,7 +53,6 @@ open class PhoneStateReceiver : BroadcastReceiver() {
                 TelephonyManager.EXTRA_STATE_IDLE -> PhoneStateStatus.CALL_ENDED
                 else -> PhoneStateStatus.NOTHING
             }
-            Log.e("phonestate", status.toString())
             if (context != null) {
                 val smsMap = HashMap<String, Any?>()
                 this.apply {
@@ -64,20 +62,16 @@ open class PhoneStateReceiver : BroadcastReceiver() {
                     smsMap[STATUS] = status.toString()
                     smsMap[SERVICE_CENTER_ADDRESS] = "serviceCenterAddress"
                 }
-                Log.e("phonestate", smsMap.toString())
                 if (IncomingCallHandler.isApplicationForeground(context)) {
-                    Log.e("phonestate", "forground")
                     val args = HashMap<String, Any>()
                     args[MESSAGE] = smsMap
                     foregroundSmsChannel?.invokeMethod(ON_MESSAGE, args)
                 } else {
-                    Log.e("phonestate", "backround")
                     val preferences =
                             context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
                     val disableBackground =
                             preferences.getBoolean(SHARED_PREFS_DISABLE_BACKGROUND_EXE, false)
                     if (!disableBackground) {
-                        Log.e("phonestate", "processInBackground")
                         processInBackground(context, smsMap)
                     }
                 }
@@ -86,7 +80,6 @@ open class PhoneStateReceiver : BroadcastReceiver() {
             }
 
         } catch (e: Exception) {
-            Log.e("phonestateExp", e.toString())
             e.printStackTrace()
         }
     }
