@@ -50,9 +50,9 @@ open class ConnectivityReceiver : BroadcastReceiver() {
         ContextHolder.applicationContext = context!!.applicationContext
         Log.e("connetion", "connection change")
         isConnectedOrConnecting(context!!)
-        if (connectivityReceiverListener != null) {
-            connectivityReceiverListener!!.onNetworkConnectionChanged(isConnectedOrConnecting(context!!))
-        }
+//        if (connectivityReceiverListener != null) {
+//            connectivityReceiverListener!!.onNetworkConnectionChanged(isConnectedOrConnecting(context!!))
+//        }
     }
 
     private fun isConnectedOrConnecting(context: Context): Boolean {
