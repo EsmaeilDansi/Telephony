@@ -18,7 +18,6 @@ import android.util.Log
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.content.IntentFilter
-import android.util.Log
 class TelephonyPlugin : FlutterPlugin, ActivityAware {
 
     private lateinit var smsChannel: MethodChannel
