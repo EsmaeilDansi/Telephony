@@ -86,9 +86,8 @@ class SmsMethodCallHandler(
         Log.e("method call", "method calllllll.")
 
         if (call.hasArgument(LISTEN_ON_SMS)) {
-            if (call.argument(LISTEN_ON_SMS).toString() == "false") {
+            if (call.argument(LISTEN_ON_SMS).toString().equals("false")) {
                 listenOnSms = false
-
             } else {
                 listenOnSms = true;
             }
