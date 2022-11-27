@@ -78,12 +78,21 @@ class SmsMethodCallHandler(
 
     private var requestCode: Int = -1
 
+    private var listenOnSms: Boolean = false
+
+    private var listenOnCall: Boolean = false
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.e("method call", "method calllllll.")
 
         if (call.hasArgument(LISTEN_ON_SMS)) {
-            Log.e("method call", "listen on sms ")
-            Log.e("listen on sms", call.argument(LISTEN_ON_SMS)!!)
+            if (call.argument(LISTEN_ON_SMS) == "false") {
+                listenOnSms = false
+
+            } else {
+                listenOnSms = true;
+            }
+            Log.e("listen on sms", listenOnSms.toString())
         }
 
         this.result = result
@@ -319,11 +328,14 @@ class SmsMethodCallHandler(
             SmsAction.BACKGROUND_SERVICE_INITIALIZED,
             SmsAction.DISABLE_BACKGROUND_SERVICE,
             SmsAction.REQUEST_SMS_PERMISSIONS -> {
-                Log.e("get permission", "get sms permisssion..........")
+                if (listenOnSms) {
+                    val permissions = permissionsController.getSmsPermissions()
+                    return checkOrRequestPermission(permissions, requestCode)
+                } else {
+                    Log.e("get permission", "listen on  sms cancellllllllll")
+                }
 
 
-                val permissions = permissionsController.getSmsPermissions()
-                return checkOrRequestPermission(permissions, requestCode)
             }
 
             SmsAction.GET_DATA_NETWORK_TYPE,
