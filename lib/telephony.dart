@@ -57,12 +57,12 @@ class Telephony {
   late MessageHandler _onBackgroundMessages;
   late SmsSendStatusListener _statusListener;
 
-  // Stream<String> get connectionStream {
-  //   // return _eventChannel
-  //   //     .receiveBroadcastStream()
-  //   //     .distinct()
-  //   //     .map((dynamic event) => event.toString());
-  // }
+  Stream<String> get connectionStream {
+    return _eventChannel
+        .receiveBroadcastStream()
+        .distinct()
+        .map((dynamic event) => event.toString());
+  }
 
   ///
   /// Gets a singleton instance of the [Telephony] class.
