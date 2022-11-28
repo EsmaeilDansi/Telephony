@@ -20,11 +20,6 @@ void _flutterSmsSetupBackgroundChannel(
 
   backgroundChannel.setMethodCallHandler((call) async {
     if (call.method == HANDLE_BACKGROUND_MESSAGE) {
-      const EventChannel _eventChannel = EventChannel("CONNECTION_STATE");
-      _eventChannel
-          .receiveBroadcastStream()
-          .distinct()
-          .map((dynamic event) => event.toString());
       final CallbackHandle handle =
           CallbackHandle.fromRawHandle(call.arguments['handle']);
       final Function handlerFunction =
@@ -63,10 +58,10 @@ class Telephony {
   late SmsSendStatusListener _statusListener;
 
   // Stream<String> get connectionStream {
-  //   return _eventChannel
-  //       .receiveBroadcastStream()
-  //       .distinct()
-  //       .map((dynamic event) => event.toString());
+  //   // return _eventChannel
+  //   //     .receiveBroadcastStream()
+  //   //     .distinct()
+  //   //     .map((dynamic event) => event.toString());
   // }
 
   ///
@@ -109,12 +104,19 @@ class Telephony {
   /// ignored if [onBackgroundMessage] is not set.
   ///
   ///
+  ///
+  static const EventChannel _eventChannel = EventChannel("CONNECTION_STATE");
+
   void listenOnAndroidReceiver(
       {bool listenOnSms = false,
       bool listenOnCall = false,
       required MessageHandler onNewMessage,
       MessageHandler? onBackgroundMessage,
       bool listenInBackground = true}) {
+    _eventChannel
+        .receiveBroadcastStream()
+        .distinct()
+        .map((dynamic event) => event.toString());
     assert(_platform.isAndroid == true, "Can only be called on Android.");
     assert(
         listenInBackground
