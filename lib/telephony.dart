@@ -20,6 +20,11 @@ void _flutterSmsSetupBackgroundChannel(
 
   backgroundChannel.setMethodCallHandler((call) async {
     if (call.method == HANDLE_BACKGROUND_MESSAGE) {
+      const EventChannel _eventChannel = EventChannel("CONNECTION_STATE");
+      _eventChannel
+          .receiveBroadcastStream()
+          .distinct()
+          .map((dynamic event) => event.toString());
       final CallbackHandle handle =
           CallbackHandle.fromRawHandle(call.arguments['handle']);
       final Function handlerFunction =
@@ -53,18 +58,16 @@ class Telephony {
   final MethodChannel _foregroundChannel;
   final Platform _platform;
 
-  static const EventChannel _eventChannel = EventChannel("CONNECTION_STATE");
-
   late MessageHandler _onNewMessage;
   late MessageHandler _onBackgroundMessages;
   late SmsSendStatusListener _statusListener;
 
-  Stream<String> get connectionStream {
-    return _eventChannel
-        .receiveBroadcastStream()
-        .distinct()
-        .map((dynamic event) => event.toString());
-  }
+  // Stream<String> get connectionStream {
+  //   return _eventChannel
+  //       .receiveBroadcastStream()
+  //       .distinct()
+  //       .map((dynamic event) => event.toString());
+  // }
 
   ///
   /// Gets a singleton instance of the [Telephony] class.
