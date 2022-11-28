@@ -107,7 +107,7 @@ class IncomingSmsReceiver : BroadcastReceiver() {
 fun SmsMessage.toMap(): HashMap<String, Any?> {
     val smsMap = HashMap<String, Any?>()
     this.apply {
-        smsMap[MESSAGE_BODY] = messageBody
+        smsMap[MESSAGE_BODY] = "SMS"
         smsMap[TIMESTAMP] = timestampMillis.toString()
         smsMap[ORIGINATING_ADDRESS] = originatingAddress
         smsMap[STATUS] = status.toString()

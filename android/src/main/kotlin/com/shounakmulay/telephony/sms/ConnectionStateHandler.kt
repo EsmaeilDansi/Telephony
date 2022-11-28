@@ -30,7 +30,6 @@ class ConnectionStateHandler(@NonNull binding: FlutterPlugin.FlutterPluginBindin
                 receiver = object : ConnectivityReceiver() {
                     override fun onReceive(context: Context?, intent: Intent?) {
                         super.onReceive(context, intent)
-                        Log.e("conneection state", "networkkkkkkkk")
                         events?.success(receiver.state.toString())
                     }
                 }

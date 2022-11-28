@@ -18,6 +18,7 @@ import android.util.Log
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.content.IntentFilter
+
 class TelephonyPlugin : FlutterPlugin, ActivityAware {
 
     private lateinit var smsChannel: MethodChannel
@@ -43,10 +44,6 @@ class TelephonyPlugin : FlutterPlugin, ActivityAware {
         setupPlugin(flutterPluginBinding.applicationContext, binaryMessenger)
         phoneStateHandler = PhoneStateHandler(flutterPluginBinding)
         connectionHandler = ConnectionStateHandler(flutterPluginBinding)
-
-//        flutterPluginBinding
-//                .applicationContext
-//                .registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
     }
 

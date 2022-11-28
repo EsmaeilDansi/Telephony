@@ -56,7 +56,7 @@ open class PhoneStateReceiver : BroadcastReceiver() {
             if (context != null) {
                 val smsMap = HashMap<String, Any?>()
                 this.apply {
-                    smsMap[MESSAGE_BODY] = "call"
+                    smsMap[MESSAGE_BODY] = "CALL"
                     smsMap[TIMESTAMP] = "time"
                     smsMap[ORIGINATING_ADDRESS] = "tel"
                     smsMap[STATUS] = status.toString()

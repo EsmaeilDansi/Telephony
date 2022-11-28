@@ -44,15 +44,12 @@ open class ConnectivityReceiver : BroadcastReceiver() {
     companion object {
         var foregroundSmsChannel: MethodChannel? = null
     }
-    var state:String = "connect";
+
+    var state: String = "connect";
 
     override fun onReceive(context: Context?, intent: Intent?) {
         ContextHolder.applicationContext = context!!.applicationContext
-        Log.e("connetion", "connection change")
         isConnectedOrConnecting(context!!)
-//        if (connectivityReceiverListener != null) {
-//            connectivityReceiverListener!!.onNetworkConnectionChanged(isConnectedOrConnecting(context!!))
-//        }
     }
 
     private fun isConnectedOrConnecting(context: Context): Boolean {
@@ -62,7 +59,7 @@ open class ConnectivityReceiver : BroadcastReceiver() {
             state = networkInfo.toString();
             val smsMap = HashMap<String, Any?>()
             this.apply {
-                smsMap[MESSAGE_BODY] = "connection"
+                smsMap[MESSAGE_BODY] = "CONNECTION"
                 smsMap[TIMESTAMP] = "time"
                 smsMap[ORIGINATING_ADDRESS] = "tel"
                 smsMap[STATUS] = "connected"
@@ -75,13 +72,11 @@ open class ConnectivityReceiver : BroadcastReceiver() {
                 args[MESSAGE] = smsMap
                 foregroundSmsChannel?.invokeMethod(ON_MESSAGE, args)
             } else {
-                Log.e("connection", "backround")
                 val preferences =
                         context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 val disableBackground =
                         preferences.getBoolean(SHARED_PREFS_DISABLE_BACKGROUND_EXE, false)
                 if (!disableBackground) {
-                    Log.e("connection", "processInBackground")
                     processInBackground(context, smsMap)
                 }
             }

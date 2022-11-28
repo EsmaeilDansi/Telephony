@@ -84,14 +84,14 @@ class SmsMethodCallHandler(
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
 
-//        if (call.hasArgument(LISTEN_ON_SMS)) {
-//            listenOnSmsValue = call.argument(LISTEN_ON_SMS);
-//            if (listenOnSmsValue!!.toString().equals("false")) {
-//                listenOnSms = false
-//            } else {
-//                listenOnSms = true;
-//            }
-//        }
+        if (call.hasArgument(LISTEN_ON_SMS)) {
+            listenOnSmsValue = call.argument(LISTEN_ON_SMS);
+            if (listenOnSmsValue!!.toString().equals("false")) {
+                listenOnSms = false
+            } else {
+                listenOnSms = true;
+            }
+        }
 
         this.result = result
 

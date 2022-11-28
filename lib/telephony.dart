@@ -113,10 +113,6 @@ class Telephony {
       required MessageHandler onNewMessage,
       MessageHandler? onBackgroundMessage,
       bool listenInBackground = true}) {
-    _eventChannel
-        .receiveBroadcastStream()
-        .distinct()
-        .map((dynamic event) => event.toString());
     assert(_platform.isAndroid == true, "Can only be called on Android.");
     assert(
         listenInBackground
