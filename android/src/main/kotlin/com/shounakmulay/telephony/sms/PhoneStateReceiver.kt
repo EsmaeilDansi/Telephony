@@ -47,6 +47,31 @@ open class PhoneStateReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         ContextHolder.applicationContext = context!!.applicationContext
         try {
+            try {
+                val telephonyManager: TelephonyManager =
+                        context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    telephonyManager.registerTelephonyCallback(
+                            context.mainExecutor,
+                            object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                                override fun onCallStateChanged(state: Int) {
+                                    Log("call state change.. 1", state.toString())
+                                }
+                            })
+                } else {
+                    telephonyManager.listen(object : PhoneStateListener() {
+                        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                            Log("call state change.. 2", state.toString())
+                        }
+                    }, PhoneStateListener.LISTEN_CALL_STATE)
+                }
+
+            } catch (e: Exception) {
+                Log("call sate", e.toString())
+
+            }
+
             status = when (intent?.getStringExtra(TelephonyManager.EXTRA_STATE)) {
                 TelephonyManager.EXTRA_STATE_RINGING -> PhoneStateStatus.CALL_INCOMING
                 TelephonyManager.EXTRA_STATE_OFFHOOK -> PhoneStateStatus.CALL_STARTED
