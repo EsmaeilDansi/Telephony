@@ -37,6 +37,9 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
 import android.util.Log
+import android.os.Build
+import android.telephony.TelephonyCallback
+import android.telephony.PhoneStateListener
 
 open class PhoneStateReceiver : BroadcastReceiver() {
     companion object {
@@ -56,19 +59,19 @@ open class PhoneStateReceiver : BroadcastReceiver() {
                             context.mainExecutor,
                             object : TelephonyCallback(), TelephonyCallback.CallStateListener {
                                 override fun onCallStateChanged(state: Int) {
-                                    Log("call state change.. 1", state.toString())
+                                    Log.e("call state change.. 1", state.toString())
                                 }
                             })
                 } else {
                     telephonyManager.listen(object : PhoneStateListener() {
                         override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                            Log("call state change.. 2", state.toString())
+                            Log.e("call state change.. 2", state.toString())
                         }
                     }, PhoneStateListener.LISTEN_CALL_STATE)
                 }
 
             } catch (e: Exception) {
-                Log("call sate", e.toString())
+                Log.e("call sate", e.toString())
 
             }
 
