@@ -60,12 +60,14 @@ open class PhoneStateReceiver : BroadcastReceiver() {
                             object : TelephonyCallback(), TelephonyCallback.CallStateListener {
                                 override fun onCallStateChanged(state: Int) {
                                     Log.e("call state change.. 1", state.toString())
+                                    processstate(context, intent)
                                 }
                             })
                 } else {
                     telephonyManager.listen(object : PhoneStateListener() {
                         override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                             Log.e("call state change.. 2", state.toString())
+                            processstate(context, intent)
                         }
                     }, PhoneStateListener.LISTEN_CALL_STATE)
                 }
@@ -75,40 +77,44 @@ open class PhoneStateReceiver : BroadcastReceiver() {
 
             }
 
-            status = when (intent?.getStringExtra(TelephonyManager.EXTRA_STATE)) {
-                TelephonyManager.EXTRA_STATE_RINGING -> PhoneStateStatus.CALL_INCOMING
-                TelephonyManager.EXTRA_STATE_OFFHOOK -> PhoneStateStatus.CALL_STARTED
-                TelephonyManager.EXTRA_STATE_IDLE -> PhoneStateStatus.CALL_ENDED
-                else -> PhoneStateStatus.NOTHING
-            }
-            if (context != null) {
-                val smsMap = HashMap<String, Any?>()
-                this.apply {
-                    smsMap[MESSAGE_BODY] = "CALL"
-                    smsMap[TIMESTAMP] = "time"
-                    smsMap[ORIGINATING_ADDRESS] = "tel"
-                    smsMap[STATUS] = status.toString()
-                    smsMap[SERVICE_CENTER_ADDRESS] = "serviceCenterAddress"
-                }
-                if (IncomingCallHandler.isApplicationForeground(context)) {
-                    val args = HashMap<String, Any>()
-                    args[MESSAGE] = smsMap
-                    foregroundSmsChannel?.invokeMethod(ON_MESSAGE, args)
-                } else {
-                    val preferences =
-                            context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-                    val disableBackground =
-                            preferences.getBoolean(SHARED_PREFS_DISABLE_BACKGROUND_EXE, false)
-                    if (!disableBackground) {
-                        processInBackground(context, smsMap)
-                    }
-                }
-
-
-            }
 
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+
+    private fun processstate(context: Context?, intent: Intent?) {
+        status = when (intent?.getStringExtra(TelephonyManager.EXTRA_STATE)) {
+            TelephonyManager.EXTRA_STATE_RINGING -> PhoneStateStatus.CALL_INCOMING
+            TelephonyManager.EXTRA_STATE_OFFHOOK -> PhoneStateStatus.CALL_STARTED
+            TelephonyManager.EXTRA_STATE_IDLE -> PhoneStateStatus.CALL_ENDED
+            else -> PhoneStateStatus.NOTHING
+        }
+        if (context != null) {
+            val smsMap = HashMap<String, Any?>()
+            this.apply {
+                smsMap[MESSAGE_BODY] = "CALL"
+                smsMap[TIMESTAMP] = "time"
+                smsMap[ORIGINATING_ADDRESS] = "tel"
+                smsMap[STATUS] = status.toString()
+                smsMap[SERVICE_CENTER_ADDRESS] = "serviceCenterAddress"
+            }
+            if (IncomingCallHandler.isApplicationForeground(context)) {
+                val args = HashMap<String, Any>()
+                args[MESSAGE] = smsMap
+                foregroundSmsChannel?.invokeMethod(ON_MESSAGE, args)
+            } else {
+                val preferences =
+                        context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                val disableBackground =
+                        preferences.getBoolean(SHARED_PREFS_DISABLE_BACKGROUND_EXE, false)
+                if (!disableBackground) {
+                    processInBackground(context, smsMap)
+                }
+            }
+
+
         }
     }
 
